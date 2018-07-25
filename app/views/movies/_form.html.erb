@@ -30,6 +30,30 @@
     <%= f.label :dbID %>
     <%= f.text_field :dbID %>
   </div>
+  <div class="field">
+   <%= f.label :actor %>
+   <%= f.collection_select(:actor_ids, Actor.all, :id, :name) %>
+  </div>
+
+  <div class="field">
+   <%= f.label :director %>
+   <%= f.collection_select(:director_ids, Director.all, :id, :name) %>
+  </div>
+
+  <div class="field">
+   <%= f.label :interested %>
+   <%= f.collection_select(:interested, Person.all, :id, :name) %>
+  </div>
+
+  <div class="field">
+   <%= f.label :not_interested_in %>
+   <%= f.collection_select(:not_interested, Person.all, :id, :name) %>
+  </div>
+
+  <div class="field">
+   <%= f.label :watched_by %>
+   <%= f.collection_select(:watched_by, Person.all, :id, :name) %>
+  </div>
 
   <div class="actions">
     <%= f.submit %>

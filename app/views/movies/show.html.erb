@@ -20,5 +20,36 @@
   <%= @movie.dbID %>
 </p>
 
+<p>
+  <strong>Interests:</strong>
+  <%= @movie.interested.size %>
+</p>
+
+<p>
+  <strong>Watched By:</strong>
+  <%= @movie.watched_by.size %>
+</p>
+
+<p>
+  <strong>Not Interested In:</strong>
+  <%= @movie.not_interested.size %>
+</p>
+
+<p>
+  <strong>Directed By:</strong>
+  <%= @movie.get_directors_string  %>
+</p>
+
+<p>
+  <strong>Actors:</strong>
+  <%= @movie.actor.size %>
+</p>
+
+<p>
+  <strong>People Interested:</strong>
+  <%= @movie.get_interested_people_string %>
+</p>
+
+
 <%= link_to 'Edit', edit_movie_path(@movie) %> |
 <%= link_to 'Back', movies_path %>
