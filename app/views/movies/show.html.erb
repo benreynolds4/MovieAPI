@@ -27,12 +27,23 @@
 
 <p>
   <strong>Watched By:</strong>
-  <%= @movie.watched_by.size %>
+  <% @movie.watched_by.each do |person| %>
+  <%= person.name %>
+  <% end  %>
 </p>
 
 <p>
   <strong>Not Interested In:</strong>
-  <%= @movie.not_interested.size %>
+  <% @movie.not_interested.each do |person| %>
+  <%= person.name %>
+  <% end  %>
+</p>
+
+<p>
+  <strong>Doesn't mind:</strong>
+  <% @movie.dont_mind.each do |person| %>
+  <%= person.name %>
+  <% end  %>
 </p>
 
 <p>

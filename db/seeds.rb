@@ -14,3 +14,7 @@ movie.watched_by << p
 movie.director << director
 movie.save
 
+movie = Movie.create(name: "Test - Add Don't Minds")
+movie.dont_mind << user
+movie.save
+

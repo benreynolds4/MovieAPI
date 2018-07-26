@@ -4,8 +4,11 @@ class Movie
   field :rating, type: String
   field :date, type: String
   field :dbID, type: String
+  field :runtime, type: String
+  field :overview, type: String
   has_and_belongs_to_many :interested, class_name: "Person", inverse_of: :interests
   has_and_belongs_to_many :not_interested, class_name: "Person", inverse_of: :non_interests
+  has_and_belongs_to_many :dont_mind, class_name: "Person", inverse_of: :dont_mind
   has_and_belongs_to_many :watched_by, class_name: "Person", inverse_of: :watched
   has_and_belongs_to_many :director, inverse_of: :movies
   has_and_belongs_to_many :actor, inverse_of: :movies
