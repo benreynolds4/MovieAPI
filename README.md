@@ -20,6 +20,12 @@
    Returns
    All User Saved in App with id.
 
+   v1/users       
+   Example Request:
+   http://localhost:3000/users
+   Returns
+   All Users
+
    v1/movie/:id 	
    Example Request:
    http://localhost:3000/movie/5b58e742c5cbe59a6b3c52e4	
