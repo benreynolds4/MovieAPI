@@ -12,6 +12,7 @@ Rails.application.routes.draw do
    #Get Routes 
 
    match 'v1/user/:id' => 'api#get_user', via: :get
+   match 'v1/users' => 'api#get_all_users', via: :get
 
    match 'v1/movie/:id' => 'api#get_movie', via: :get
    match 'v1/movies' => 'api#get_all_movie', via: :get

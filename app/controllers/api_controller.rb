@@ -60,6 +60,16 @@ class ApiController < ApplicationController
       return 
    end
 
+   def get_all_users
+    users = Person.all
+     render :status => 200,
+               :json => { :success => true,
+                          :info => "User",
+                          :data => { :users => users }
+               }
+      return 
+   end
+
    def get_movie
    	 movie_id = params[:id]
    	 movie = Movie.find(movie_id)
@@ -80,6 +90,8 @@ class ApiController < ApplicationController
                }
       return 
    end
+
+
 
    def add_movie
    	 input = JSON.parse(request.body.read)
