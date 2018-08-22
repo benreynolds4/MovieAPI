@@ -120,6 +120,17 @@ class ApiController < ApplicationController
 	   return
    end
 
+   def common_movis_by_filter(category, users_ids)
+      users = get_users_for_ids(users_ids)
+      if category = 'interested'
+        users.each do |user| 
+        end
+      elsif category = 'dont_mind'
+      elsif category = 'watched'
+      elsif category = 'not_interested'
+      end
+   end
+
    def add_user_movie_information
    	input = JSON.parse(request.body.read)
    	user_movies = input["user_movies"]
@@ -179,6 +190,14 @@ class ApiController < ApplicationController
   end
 
   private 
+
+  def get_users_for_ids(user_ids)
+    users = []
+    user_ids.each do |id|
+      users.append(Person.find(id))
+    end
+    users
+  end
 
   def get_movies(filter_type)
   	case filter_type
