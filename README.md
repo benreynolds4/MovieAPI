@@ -7,7 +7,7 @@
 
    v1/movie 		
    Example Body
-   { "movies": [{"name":"Lord Of The Rings", "date":"2017-01-01", "rating":"5", "overview":"", "runtime": "", "dbId":"4323"}, {"name":"Lord Of The Rings 2", "date":"2017-01-02","overview":"", "runtime": "", "rating":"45", "dbId":"4324"}] }
+   { "movies": [{"name":"Lord Of The Rings", "date":"2017-01-01", "rating":"5", "overview":"", "runtime": "", "dbId":"4323", "liked_by_users":"[5b58e742c5cbe59a6b3c52e4, 5b58e742c5cbe59a6b3c52e4]"}, {"name":"Lord Of The Rings 2", "date":"2017-01-02","overview":"", "runtime": "", "rating":"45", "dbId":"4324", "liked_by_users":"[5b58e742c5cbe59a6b3c52e4]"}] }
 
    v1/user_movie 
    Example Body:
@@ -50,3 +50,9 @@
    http://localhost:3000/v1/search/movie/james gunn
    Returns
    Searches the movie api database for james gunn
+
+
+   v1/users_interests?user_ids[]=:user_id_1$user_ids[]=:user_id_1
+   http://localhost:3000/v1/users_interests?user_ids[]=5b58e742c5cbe59a6b3c52e4&user_ids[]=5b58e742c5cbe59a6b3c52e4
+   Returns
+   List of movies liked by inputted users, ordered by number of users given liked. 

@@ -9,7 +9,11 @@ Rails.application.routes.draw do
 
    match 'v1/user_movie' => 'api#add_user_movie_information', via: :post
 
+
+
    #Get Routes 
+
+   match 'v1/users_interests' =>  'api#movies_liked_by_all_given_users', via: :get
 
    match 'v1/user/:id' => 'api#get_user', via: :get
    match 'v1/users' => 'api#get_all_users', via: :get

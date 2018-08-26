@@ -13,6 +13,46 @@ class ApiController < ApplicationController
 	   return
 	end
 
+  def movies_liked_by_person(id)
+    user = Person.find(id)
+    user.interests
+  end 
+
+  def movies_liked_by_all_given_users 
+    # Order by movies liked by all then by all - 1 then by all - 2 etc. 
+    user_ids = params[:user_ids]
+    movies = {}
+    user_ids.each do |id|
+      movies_liked_by_person(id).each do |movie|  
+        if movies[movie].nil?
+          print "INITAING"
+           movies[movie] = 1
+        else 
+          print "ADDING"
+          movies[movie] += 1
+        end
+      end 
+    end
+
+    result = {}
+    print movies 
+    movies.each do |key, value| 
+      if result[value].nil?
+        result[value] = key.to_json
+      else 
+        result[value] = result[value] << key.to_json
+      end
+    end
+
+    render :status => 200,
+     :json => { :success => true,
+                :info => "Movies",
+                :data => { :movies => result }
+     }
+     return 
+
+  end 
+
 	def search_media
 	    resource = params[:resource]
 	    search_term = params[:search_term]
@@ -102,12 +142,23 @@ class ApiController < ApplicationController
    	 movies.each do |input_movie| 
    	 	movie_name = input_movie["name"]
    	 	movie_rating = input_movie["rating"]
+      # Add Genre, directors, actors and should add user information
    	 	movie_date = input_movie["date"]
    	 	movie_dbID = input_movie["dbID"]
-   	 	movie_runTime = input_movie["runtime"]
+   	 	movie_runtime = input_movie["runtime"]
    	 	movie_overview = input_movie["overview"]
 
    	 	saved_movie = Movie.create(name: movie_name, rating: movie_rating, date: movie_date, dbID: movie_dbID, runtime: movie_runtime, overview: movie_overview)
+
+
+      input_movie["liked_by_users"].tr('[]', '').split(',').map(&:to_s).each do |user_id|
+        user_movie = {}
+        user_movie["user"] = user_id.to_s
+        user_movie['movie'] = saved_movie.id
+        user_movie["interested"]  = true
+        add_user_movie_information(user_movie)
+      end 
+
    	 	created_movies << saved_movie
    	 end
 	   
@@ -120,35 +171,42 @@ class ApiController < ApplicationController
 	   return
    end
 
-   def common_movis_by_filter(category, users_ids)
-      users = get_users_for_ids(users_ids)
-      if category = 'interested'
-        users.each do |user| 
-        end
-      elsif category = 'dont_mind'
-      elsif category = 'watched'
-      elsif category = 'not_interested'
-      end
-   end
 
-   def add_user_movie_information
-   	input = JSON.parse(request.body.read)
-   	user_movies = input["user_movies"]
+   def add_user_movie_information(user_movie = nil)
+
+    if user_movie.nil? 
+      api_request = true
+      input = JSON.parse(request.body.read)
+   	  user_movies = input["user_movies"]
+    else 
+      api_request = false
+      user_movies = user_movie
+      movie = Movie.find(user_movie['movie'])
+      user_id = user_movie['user']
+      user_interested = user_movie["interested"]
+      movie_id = movie.id
+    end
+
    	movies = []
+
    	change_made = false
    	user_movies.each do |user_movie|
-   		user_movie_movie= user_movie["movie"]
-   	 	user_movie_user = user_movie["user"]
-   	 	user_movie_interested = user_movie["interested"]
-   	 	user_movie_not_interested = user_movie["not_interested"]
-   	 	user_movie_dont_mind = user_movie["dont_mind"]
-   	 	user_movie_watched_by = user_movie["watched"]
+   	 	user_movie_not_interested = false 
+   	 	user_movie_dont_mind = false
+   	 	user_movie_watched_by = false
 
-   	 	movie = Movie.find(user_movie_movie)
+      if api_request
+       user_id = user_movie['user']
+       user_interested = user_movie["interested"]
+       movie_id = user_movie['movie']
+     end 
+
+   	 	movie = Movie.find(movie_id)
    	 	movies << movie
-   	 	user = Person.find(user_movie_user)
+   	 	user = Person.find(user_id)
 
-   	 	if user_movie_interested == "1"
+   	 	if user_interested 
+        print "Interested"
    	 		movie.interested << user
    	 		movie.dont_mind.delete(user)
    	 		movie.not_interested.delete(user)
@@ -170,23 +228,28 @@ class ApiController < ApplicationController
    	 		change_made = true
    	 	end
    	 	movie.save
+       movie.interested.each do |user|
+        print user.name
+       end
    	end
 
-   	if change_made 
-	   render :status => 200,
-       :json => { :success => true,
-                  :info => "User Movies Updated",
-                  :data => { :movies => movies }
-       }
-		return
-	else
-		render :status => 200,
-       :json => { :success => true,
-                  :info => "No User Movies Updated",
-                  :data => { :movies => movies }
-       }
-	  return
-	end
+    if api_request 
+     	if change_made 
+  	   render :status => 200,
+         :json => { :success => true,
+                    :info => "User Movies Updated",
+                    :data => { :movies => movies }
+         }
+  		return
+  	 else
+  		render :status => 200,
+         :json => { :success => true,
+                    :info => "No User Movies Updated",
+                    :data => { :movies => movies }
+         }
+  	  return
+  	 end
+    end
   end
 
   private 
@@ -214,6 +277,17 @@ class ApiController < ApplicationController
   	end
   	movies
   end
+
+  def common_movies_by_filter(category, users_ids)
+      users = get_users_for_ids(users_ids)
+      if category = 'interested'
+        users.each do |user| 
+        end
+      elsif category = 'dont_mind'
+      elsif category = 'watched'
+      elsif category = 'not_interested'
+      end
+   end
 
   def find_by_resource(resource, search_term)
   	#resources => person, movie, tv, collection, company, genre
