@@ -148,8 +148,15 @@ class ApiController < ApplicationController
    	 	movie_runtime = input_movie["runtime"]
    	 	movie_overview = input_movie["overview"]
 
-   	 	saved_movie = Movie.create(name: movie_name, rating: movie_rating, date: movie_date, dbID: movie_dbID, runtime: movie_runtime, overview: movie_overview)
+      
 
+
+      if Movie.where(name: movie_name).exists?
+        saved_movie = Movie.where(name: movie_name).first
+      else
+        print "NEW MOVIE"
+   	 	  saved_movie = Movie.create(name: movie_name, rating: movie_rating, date: movie_date, dbID: movie_dbID, runtime: movie_runtime, overview: movie_overview)
+      end
 
       input_movie["liked_by_users"].tr('[]', '').split(',').map(&:to_s).each do |user_id|
         user_movie = {}
