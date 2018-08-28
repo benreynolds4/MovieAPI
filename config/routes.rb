@@ -24,5 +24,11 @@ Rails.application.routes.draw do
 
    match 'v1/search/:resource/:search_term' => 'api#search_media', via: :get
 
+   match 'v1/directors' => 'api#get_directors', via: :get
+   match 'v1/directors/:id' => 'api#get_director', via: :get
+
+   match 'v1/actors' => 'api#get_actors', via: :get
+   match 'v1/actors/:id' => 'api#get_actor', via: :get
+
    
 end

@@ -65,6 +65,52 @@ class ApiController < ApplicationController
 	   return
 	end
 
+
+   def get_actor
+     actor_id = params[:id]
+     actor = Actor.find(actor_id)
+     render :status => 200,
+               :json => { :success => true,
+                          :info => "Actor",
+                          :data => { :actor => actor }
+               }
+      return 
+   end
+
+   def get_actors
+    actors = Actor.all
+     render :status => 200,
+               :json => { :success => true,
+                          :info => "Actors",
+                          :data => { :actors => actors }
+               }
+      return 
+   end
+
+   def get_director
+     director_id = params[:id]
+     director = Director.find(director_id)
+     render :status => 200,
+               :json => { :success => true,
+                          :info => "Director",
+                          :data => { :director => director }
+               }
+      return 
+   end
+
+   def get_directors
+    directors = Director.all
+    render :status => 200,
+               :json => { :success => true,
+                          :info => "Directors",
+                          :data => { :directors => directors }
+               }
+      return 
+   end
+
+
+
+
    def add_user 
    	  	input = JSON.parse(request.body.read)
 	    name = input["name"]
@@ -140,6 +186,8 @@ class ApiController < ApplicationController
    	 created_movies = []
 
    	 movies.each do |input_movie| 
+      movie_directors = []
+      movie_actors = []
    	 	movie_name = input_movie["name"]
    	 	movie_rating = input_movie["rating"]
       # Add Genre, directors, actors and should add user information
@@ -148,14 +196,43 @@ class ApiController < ApplicationController
    	 	movie_runtime = input_movie["runtime"]
    	 	movie_overview = input_movie["overview"]
 
-      
+      movie_rotten_tomatoes = input_movie["rotten_tomatoes"]
+      movie_imdb = input_movie["imdb"]
+      movie_image_source = input_movie["image_source"]
+      movie_actors = input_movie["actors"]
+      movie_directors = input_movie["directors"]
+      actors = []
+      directors = []
 
+      if not movie_actors.nil?
+        movie_actors.each do |actor_input|
+          if not Actor.where(name:actor_input['name']).exists?
+            actors << Actor.new(name:actor_input['name'])
+          else 
+            actors << Actor.find_by(name:actor_input['name'])
+          end
+        end 
+     end
+
+     if not movie_directors.nil?
+        movie_directors.each do |director_input|
+          if not Director.where(name:director_input['name']).exists?
+            directors << Director.new(name:director_input['name'])
+          else 
+            directors << Director.find_by(name:director_input['name'])
+          end
+        end 
+     end
 
       if Movie.where(name: movie_name).exists?
         saved_movie = Movie.where(name: movie_name).first
       else
         print "NEW MOVIE"
-   	 	  saved_movie = Movie.create(name: movie_name, rating: movie_rating, date: movie_date, dbID: movie_dbID, runtime: movie_runtime, overview: movie_overview)
+   	 	  saved_movie = Movie.create(name: movie_name, rating: movie_rating, date: movie_date, dbID: movie_dbID, runtime: movie_runtime, overview: movie_overview, rotten_tomatoes: movie_rotten_tomatoes, imdb: movie_imdb, image_source: movie_image_source)
+
+
+        saved_movie.actors << actors
+        saved_movie.director << directors
       end
 
       input_movie["liked_by_users"].tr('[]', '').split(',').map(&:to_s).each do |user_id|
