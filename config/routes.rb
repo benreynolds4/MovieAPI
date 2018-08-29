@@ -30,5 +30,8 @@ Rails.application.routes.draw do
    match 'v1/actors' => 'api#get_actors', via: :get
    match 'v1/actors/:id' => 'api#get_actor', via: :get
 
+
+   match 'v1/delete_all' => 'api#delete_all_instances', via: :get
+
    
 end

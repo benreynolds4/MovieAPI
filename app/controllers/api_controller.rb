@@ -178,6 +178,20 @@ class ApiController < ApplicationController
    end
 
 
+   def delete_all_instances
+    Movie.delete_all
+    Person.delete_all
+    Actor.delete_all
+    Director.delete_all
+         render :status => 200,
+               :json => { :success => true,
+                          :info => "Deleted all instances",
+                          :data => {}
+               }
+      return 
+   end
+
+
 
    def add_movie
    	 input = JSON.parse(request.body.read)
