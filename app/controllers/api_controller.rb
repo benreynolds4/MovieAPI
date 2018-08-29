@@ -169,9 +169,11 @@ class ApiController < ApplicationController
 
    def get_all_movie
    	movies = Movie.all
+    movies = movies.sort_by {|movie| movie.interested.count}.reverse! 
+
    	 render :status => 200,
                :json => { :success => true,
-                          :info => "User",
+                          :info => "Movies",
                           :data => { :movies => movies }
                }
       return 
