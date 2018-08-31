@@ -182,7 +182,6 @@ class ApiController < ApplicationController
 
    def delete_all_instances
     Movie.delete_all
-    Person.delete_all
     Actor.delete_all
     Director.delete_all
          render :status => 200,
